@@ -1,0 +1,1122 @@
+openapi: 3.0.0
+info:
+  title: iTicket.az API Docs
+  version: 1.0.0
+servers:
+  - url: ${API_BASE_URL}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+    schemas: {}
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "400":
+          description: "Bad request"
+        "500":
+          description: "Internal server error"
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login an existing user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "user@example.com"
+                password:
+                  type: string
+                  example: "password123"
+      responses:
+        "200":
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: "Invalid credentials"
+        "500":
+          description: "Internal server error"
+
+  /auth/profile:
+    get:
+      tags:
+        - Auth
+      summary: Get user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "401":
+          description: "Not authorized"
+        "500":
+          description: "Internal server error"
+
+    put:
+      tags:
+        - Auth
+      summary: Update user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "new_username"
+                email:
+                  type: string
+                  example: "new_email@example.com"
+                currentPassword:
+                  type: string
+                  example: "current_password"
+                newPassword:
+                  type: string
+                  example: "new_password"
+      responses:
+        "200":
+          description: User profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponse"
+        "401":
+          description: "Not authorized"
+        "500":
+          description: "Internal server error"
+
+  /users:
+    get:
+      tags:
+        - Users
+      summary: Get all users
+      description: Retrieve all users. Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"
+
+  /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      description: Retrieve a user by their ID. Admin access only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Successfully retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"
+
+    put:
+      tags:
+        - Users
+      summary: Update user
+      description: Update a user's details. Admin access only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to update
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: Successfully updated user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserDto"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        "400":
+          description: Bad request due to validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"
+
+    delete:
+      tags:
+        - Users
+      summary: Delete user
+      description: Delete a user by their ID. Admin access only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to delete
+          schema:
+            type: string
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User removed"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"
+
+  /categories:
+    get:
+      tags:
+        - Categories
+      summary: Retrieve all categories
+      responses:
+        "200":
+          description: A list of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Category"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    post:
+      tags:
+        - Categories
+      summary: Create a new category.
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+      responses:
+        "201":
+          description: Category created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /categories/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the category
+        schema:
+          type: string
+
+    get:
+      tags:
+        - Categories
+      summary: Get a category by ID
+      responses:
+        "200":
+          description: Category retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    put:
+      tags:
+        - Categories
+      summary: Update a category by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+      responses:
+        "200":
+          description: Category updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Category"
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    delete:
+      tags:
+        - Categories
+      summary: Delete a category by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Category deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Category not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /events:
+    get:
+      tags:
+        - Events
+      summary: Get all events
+      responses:
+        "200":
+          description: Successfully retrieved events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Event"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    post:
+      tags:
+        - Events
+      summary: Create a new event
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "201":
+          description: Event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /events/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the event
+        schema:
+          type: string
+    put:
+      tags:
+        - Events
+      summary: Update an event by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Event"
+      responses:
+        "200":
+          description: Event updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Event"
+        "404":
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    delete:
+      tags:
+        - Events
+      summary: Delete an event by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Event deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /tickets/order:
+    post:
+      tags:
+        - Tickets
+      summary: Order a ticket
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                eventId:
+                  type: string
+                  description: ID of the event for the ticket
+                  example: "60c72b2f9b1e4a3d8c2e5cdd"
+                quantity:
+                  type: integer
+                  description: Number of tickets
+                  example: 2
+                totalPrice:
+                  type: number
+                  description: Total price for the tickets
+                  example: 50.00
+      responses:
+        "201":
+          description: Ticket ordered successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        "400":
+          description: Validation error
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /tickets/user:
+    get:
+      tags:
+        - Tickets
+      summary: Get user's tickets
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User's tickets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /tickets:
+    get:
+      tags:
+        - Tickets
+      summary: Get all tickets
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: All tickets retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Ticket"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /tickets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: The ID of the ticket
+        schema:
+          type: string
+    get:
+      tags:
+        - Tickets
+      summary: Get a ticket by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Ticket retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        "404":
+          description: Ticket not found
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    put:
+      tags:
+        - Tickets
+      summary: Update ticket status
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: Status of the ticket (e.g., accepted, rejected)
+                  example: "accepted"
+      responses:
+        "200":
+          description: Ticket status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ticket"
+        "404":
+          description: Ticket not found
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    delete:
+      tags:
+        - Tickets
+      summary: Delete a ticket by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Ticket deleted successfully
+        "404":
+          description: Ticket not found
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /sliders:
+    get:
+      tags:
+        - Sliders
+      summary: Get all active sliders
+      responses:
+        "200":
+          description: Active sliders retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Slider"
+        "404":
+          description: Sliders not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    post:
+      tags:
+        - Sliders
+      summary: Create a new slider
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+                  description: URL of the slider image
+                  example: "https://example.com/image.jpg"
+                title:
+                  type: string
+                  description: Title of the slider
+                  example: "Welcome Slider"
+                description:
+                  type: string
+                  description: Description of the slider
+                  example: "This is a main slider description"
+      responses:
+        "201":
+          description: Slider created successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Slider"
+        "400":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /sliders/{id}:
+    put:
+      tags:
+        - Sliders
+      summary: Update a slider by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the slider to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                imageUrl:
+                  type: string
+                  description: Updated URL of the slider image
+                title:
+                  type: string
+                  description: Updated title of the slider
+                description:
+                  type: string
+                  description: Updated description of the slider
+                isActive:
+                  type: boolean
+                  description: Slider active status
+      responses:
+        "200":
+          description: Slider updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Slider"
+        "404":
+          description: Slider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+    delete:
+      tags:
+        - Sliders
+      summary: Delete a slider by ID
+      description: Admin access only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the slider to delete
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Slider deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "404":
+          description: Slider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /settings:
+    get:
+      tags:
+        - General Settings
+      summary: Get general settings
+      description: Retrieve the current general settings for the website.
+      responses:
+        "200":
+          description: Successfully retrieved settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralSettings"
+        "404":
+          description: Settings not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Settings are not found"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"
+
+    put:
+      tags:
+        - General Settings
+      summary: Update general settings
+      description: Update the current general settings for the website. descriptionAdmin access only.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/GeneralSettings"
+      responses:
+        "200":
+          description: Successfully updated settings
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GeneralSettings"
+        "404":
+          description: Settings not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Settings not found"
+        "400":
+          description: Bad request due to validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "An error occurred"

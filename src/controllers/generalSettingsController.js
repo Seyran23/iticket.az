@@ -2,6 +2,9 @@ const GeneralSettings = require("../models/GeneralSettings");
 const {generalSettingsValidation} = require("../utils/validations/generalSettingsValidation")
 
 exports.getSettings = async (req, res) => {
+    const { error } = generalSettingsValidation(req.body);
+
+    if (error) return res.status(400).json({ message: error.details[0].message });
     
     try {
         const settings = await GeneralSettings.findOne();

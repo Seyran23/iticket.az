@@ -1,5 +1,5 @@
 const Event = require("../models/Event");
-const { eventValidation } = require("../utils/validations/eventValidation");
+const { createEventValidation, updateEventValidation } = require("../utils/validations/eventValidation");
 
 exports.getEvents = async (req, res) => {
   try {
@@ -11,7 +11,7 @@ exports.getEvents = async (req, res) => {
 };
 
 exports.createEvent = async (req, res) => {
-  const { error } = eventValidation(req.body);
+  const { error } = createEventValidation(req.body);
 
   if (error) return res.status(400).json({ message: error.details[0].message });
 
@@ -35,6 +35,10 @@ exports.createEvent = async (req, res) => {
 };
 
 exports.updateEvent = async (req, res) => {
+  const { error } = updateEventValidation(req.body);
+
+  if (error) return res.status(400).json({ message: error.details[0].message });
+
   const { id } = req.params;
 
   const {

@@ -1,6 +1,6 @@
 const Joi = require("joi");
 
-const eventValidation = (data) => {
+const createEventValidation = (data) => {
   const schema = Joi.object({
     title: Joi.string().min(3).required(),
     description: Joi.string().min(10).required(),
@@ -12,4 +12,16 @@ const eventValidation = (data) => {
   return schema.validate(data);
 };
 
-module.exports = { eventValidation };
+const updateEventValidation = (data) => {
+  const schema = Joi.object({
+    title: Joi.string().min(3),
+    description: Joi.string().min(10),
+    date: Joi.date().iso(),
+    categories: Joi.array().items(Joi.string()),
+    location: Joi.string(),
+    price: Joi.number().precision(2),
+  });
+  return schema.validate(data);
+};
+
+module.exports = { createEventValidation, updateEventValidation };

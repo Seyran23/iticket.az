@@ -1,5 +1,5 @@
 const express = require("express")
-const {getCategories, createCategory, updateCategory, deleteCategory} = require("../controllers/categoryController")
+const {getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory} = require("../controllers/categoryController")
 
 const {protect, adminOnly} = require("../middleware/authMiddleware")
 
@@ -7,7 +7,10 @@ const {protect, adminOnly} = require("../middleware/authMiddleware")
 const router = express.Router()
 
 // Public: Get all categories
-router.get('/', getCategories);
+router.get('/', getAllCategories);
+
+// Public: Get by id
+router.get('/:id', getCategoryById);
 
 // Admin: Create a category
 router.post('/', protect, adminOnly, createCategory);

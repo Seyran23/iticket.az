@@ -2,6 +2,7 @@ const Ticket = require("../models/Ticket");
 const {
   orderTicketValidation,
 } = require("../utils/validations/ticketValidation");
+const Event = require("../models/Event")
 
 exports.orderTicket = async (req, res) => {
   const { error } = orderTicketValidation(req.body);
@@ -12,6 +13,12 @@ exports.orderTicket = async (req, res) => {
     const { eventId, quantity, totalPrice } = req.body;
     const userId = req.user._id
 
+
+    const event = await Event.findById(eventId)
+
+    if (!event) {
+      return res.status(404).json({ message: "Event with that id was not found" });
+    }
 
     const ticket = new Ticket({
       userId,

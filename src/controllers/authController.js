@@ -1,10 +1,12 @@
 const {
   registerValidation,
   loginValidation,
+  updateProfileValidation,
 } = require("../utils/validations/authValidation");
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
 const UserDto = require("../dtos/userDto");
+const bcrypt = require("bcryptjs"); 
 
 exports.registerUser = async (req, res) => {
   const { error } = registerValidation(req.body);
@@ -80,17 +82,31 @@ exports.getUserProfile = async (req, res) => {
 
 exports.updateUserProfile = async (req, res) => {
   try {
+    const { error } = updateProfileValidation(req.body);
+    if (error)
+      return res.status(400).json({ message: error.details[0].message });
+
     const userId = req.user._id;
     const user = await User.findById(userId);
 
     if (!user) {
       return res.status(401).json({ message: "User not found" });
     }
-    user.name = req.body.name || user.name;
+
+    user.username = req.body.username || user.username;
     user.email = req.body.email || user.email;
 
-    if (req.body.password) {
-      user.password = req.body.password;
+    if (req.body.currentPassword && req.body.newPassword) {
+      const isMatch = await user.matchPassword(req.body.currentPassword);
+
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ message: "Current password is incorrect" });
+      }
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(req.body.newPassword, salt);
+     
     }
 
     const updatedUser = await user.save();

@@ -2,6 +2,7 @@ const express = require("express");
 const dotenv = require("dotenv");
 dotenv.config()
 const connectDB = require("./config/db");
+const cors = require("cors")
 
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
@@ -11,14 +12,22 @@ const eventRoutes = require('./routes/eventRoutes');
 const sliderRoutes = require('./routes/sliderRoutes');
 const settingsRoutes = require('./routes/settingsRoutes');
 
+const swaggerUi = require('swagger-ui-express');
+const swaggerConfig = require("./swagger/swaggerConfig")
+
 
 connectDB()
 const app = express();
 
+const PORT = process.env.PORT || 1234;
 
+
+// swagger docs
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerConfig));
 
 
 // middlewares
+app.use(cors())
 app.use(express.json());
 
 
@@ -32,7 +41,6 @@ app.use('/api/sliders', sliderRoutes);
 app.use('/api/settings', settingsRoutes);
 
 
-const PORT = process.env.PORT || 1234;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

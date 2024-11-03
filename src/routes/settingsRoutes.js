@@ -8,6 +8,6 @@ const router = express.Router();
 router.get('/', getSettings);                   
 
 // Admin route
-router.put('/', protect, adminOnly, updateSettings); 
+router.put('/:id', protect, adminOnly, updateSettings); 
 
 module.exports = router;

@@ -31,9 +31,23 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuthResponse"
         "400":
-          description: "Bad request"
+          description: Bad request 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
         "500":
-          description: "Internal server error"
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /auth/login:
     post:
@@ -63,7 +77,14 @@ paths:
         "401":
           description: "Invalid credentials"
         "500":
-          description: "Internal server error"
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /auth/profile:
     get:
@@ -80,9 +101,24 @@ paths:
               schema:
                 $ref: "#/components/schemas/UserDto"
         "401":
-          description: "Not authorized"
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
-          description: "Internal server error"
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
     put:
       tags:
@@ -119,7 +155,14 @@ paths:
         "401":
           description: "Not authorized"
         "500":
-          description: "Internal server error"
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
 
   /users:
     get:
@@ -260,7 +303,7 @@ paths:
                     type: string
                     example: "User not found"
         "400":
-          description: Bad request due to validation errors
+          description: Bad request 
           content:
             application/json:
               schema:
@@ -268,7 +311,6 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Validation error message"
         "401":
           description: Unauthorized access
           content:
@@ -390,6 +432,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Category"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -459,6 +511,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Category"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Category not found
           content:
@@ -495,6 +557,16 @@ paths:
                 properties:
                   message:
                     type: string
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Category not found
           content:
@@ -558,7 +630,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Event"
         "400":
-          description: Validation error
+          description: Bad request 
           content:
             application/json:
               schema:
@@ -566,6 +638,16 @@ paths:
                 properties:
                   message:
                     type: string
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -604,6 +686,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Event"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Event not found
           content:
@@ -640,6 +732,16 @@ paths:
                 properties:
                   message:
                     type: string
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Event not found
           content:
@@ -693,7 +795,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Ticket"
         "400":
-          description: Validation error
+          description: Bad request 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Validation error message"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -720,6 +840,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Ticket"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -747,6 +877,16 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Ticket"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -779,6 +919,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Ticket"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Ticket not found
         "500":
@@ -816,6 +966,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Ticket"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Ticket not found
         "500":
@@ -838,6 +998,16 @@ paths:
       responses:
         "200":
           description: Ticket deleted successfully
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Ticket not found
         "500":
@@ -917,7 +1087,7 @@ paths:
               schema:
                 $ref: "#/components/schemas/Slider"
         "400":
-          description: Validation error
+          description: Bad request 
           content:
             application/json:
               schema:
@@ -925,6 +1095,17 @@ paths:
                 properties:
                   message:
                     type: string
+                    example: "Validation error message"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "500":
           description: Internal server error
           content:
@@ -976,6 +1157,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Slider"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Slider not found
           content:
@@ -1019,6 +1210,16 @@ paths:
                 properties:
                   message:
                     type: string
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Slider not found
           content:
@@ -1072,11 +1273,21 @@ paths:
                     type: string
                     example: "An error occurred"
 
+  /settings/{id}:
     put:
       tags:
         - General Settings
       summary: Update general settings
-      description: Update the current general settings for the website. descriptionAdmin access only.
+      security:
+        - bearerAuth: []
+      description: Update the current general settings for the website. Admin access only.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the slider to delete
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -1090,6 +1301,16 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GeneralSettings"
+        "401":
+          description: Unauthorized access
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Not authorized, token failed"
         "404":
           description: Settings not found
           content:
@@ -1101,7 +1322,7 @@ paths:
                     type: string
                     example: "Settings not found"
         "400":
-          description: Bad request due to validation errors
+          description: Bad request 
           content:
             application/json:
               schema:

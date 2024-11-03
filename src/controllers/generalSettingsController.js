@@ -24,9 +24,10 @@ exports.getSettings = async (req, res) => {
 
 
 exports.updateSettings = async (req, res) => {
+    const {id} = req.params
     
     try {
-        const settings = await GeneralSettings.findOne();
+        const settings = await GeneralSettings.findById(id);
         
         if (!settings) {
             return res.status(404).json({ message: "Settings not found" });
